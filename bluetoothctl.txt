@@ -1,0 +1,119 @@
+# Installation and Setup
+
+python3 --version
+pip3 --version
+
+sudo apt-get install pi-bluetooth
+sudo apt-get install bluetooth
+sudo apt-get install bluez
+sudo apt-get install bluez-tools
+sudo apt-get install python-bluez
+sudo apt-get install libbluetooth-dev
+sudo apt-get install libglib2.0-dev
+sudo apt-get install libboost-python-dev
+sudo apt-get install libboost-thread-dev
+sudo apt-get install libcap2-bin
+sudo apt-get install libtcmalloc-minimal4
+export LD_PRELOAD="/usr/lib/libtcmalloc_minimal.so.4"
+
+sudo python3 -m pip install dbus-python
+sudo python3 -m pip install pybluez
+sudo python3 -m pip install bluezero
+sudo python3 -m pip install beacontools[scan]
+
+cd /usr/local/lib/python3.5/dist-packages
+sudo pip3 download gattlib
+sudo tar xvzf ./gattlib-0.20150805.tar.gz
+cd gattlib-0.20150805/
+sudo sed -ie 's/boost_python-py34/boost_python-py35/' setup.py
+sudo pip3 install .
+
+sudo python3 -m pip install pybluez\[ble\]
+
+===================================================
+
+https://bitbucket.org/OscarAcena/pygattlib
+
+===================================================
+
+BBC micro:bit [vavet]
+E9:01:B2:1A:C5:4E
+
+BBC micro:bit [tipov]
+C8:06:B1:B4:66:53
+
+BBC micro:bit [popap]
+DF:60:7F:9B:61:F6
+
+BBC micro:bit [titug]
+CE:21:F0:50:0D:80
+
+===================================================
+
+# bluetoothctl
+# change micro:bit project setting to no pairing
+
+sudo bluetoothctl --version
+>> Version 5.43
+sudo bluetoothctl
+scan on
+scan off
+
+pair E9:01:B2:1A:C5:4E
+pair C8:06:B1:B4:66:53
+pair DF:60:7F:9B:61:F6
+
+connect E9:01:B2:1A:C5:4E
+connect C8:06:B1:B4:66:53
+connect DF:60:7F:9B:61:F6
+
+info
+
+disconnect
+
+quit
+
+=========================================================
+
+# gatttool
+
+sudo gatttool -I -t random -b E9:01:B2:1A:C5:4E
+sudo gatttool -I -t random -b C8:06:B1:B4:66:53
+sudo gatttool -I -t random -b DF:60:7F:9B:61:F6
+
+connect
+
+quit
+
+# temperature service [OK]
+
+primary e95d6100-251d-470a-a062-fa1922dfa9a8
+char-desc 0x0025 0xffff
+char-read-hnd 0x0027
+char-write-req 0x0028 0100
+char-write-req 0x0028 0000
+
+# magnetometer service [OK]
+primary e95df2d8-251d-470a-a062-fa1922dfa9a8
+char-desc 0x0025 0xffff
+# calibrate
+char-write-req 0x002f 01
+# bearing
+char-read-hnd 0x002a
+# x y z data
+char-read-hnd 0x0027
+char-write-req 0x0028 0100
+char-write-req 0x0028 0000
+
+# uart service [OK]
+primary 6e400001-b5a3-f393-e0a9-e50e24dcca9e
+char-desc 0x0025 0xffff
+# Receive
+char-read-hnd 0x0027
+# Enable receive notification
+char-write-req 0x0028 0200
+# Send
+char-write-req 0x002a 4142430D0A
+char-write-req 0x002a <STRING><NEWLINE_CRLF>
+The hex ascii code for CRLF is 0D0A
+The above example will send "ABC" terminated by a newline
